@@ -20,8 +20,8 @@ Before running the application, make sure you have the following installed:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/repository-name.git
-   cd repository-name
+   git clone https://github.com/vinay-vk-kumar/WiFiShare
+   cd WiFiShare
    ```
 
 2. **Create a virtual environment (optional but recommended):**
@@ -61,23 +61,15 @@ repository-name/
 │
 ├── app.py               # Main application file
 ├── templates/
-│   └── index.html       # HTML file for the web interface
+│   └── index.html
+├── static/
+│   └── styles.css        # Css file for the web interface
 ├── uploads/             # Directory where uploaded files are stored
 ├── requirements.txt     # List of required Python packages
 └── README.md            # This README file
-```
-
-## Creating `requirements.txt`
-
-If you need to generate the `requirements.txt`, use the following command:
-```bash
-pip freeze > requirements.txt
 ```
 
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for improvements.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
