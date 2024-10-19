@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Sharing</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>File Sharing</h1>
+
+    <h2>Upload a file</h2>
+    <form id="uploadForm" method="post" action="/upload" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div id="uploadStatus"></div>
+
+    <h2>Available files for download</h2>
+    <ul>
+        {% for file in files %}
+        <li><a href="/download/{{ file }}">{{ file }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent the form from submitting the default way
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
+
+            // Update the progress bar
+            xhr.upload.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    document.getElementById('progressBar').style.width = percentComplete + '%';
+
+                    // Update the upload status with details
+                    const uploadStatus = document.getElementById('uploadStatus');
+                    const uploadedMb = (event.loaded / (1024 * 1024)).toFixed(2);
+                    const totalMb = (event.total / (1024 * 1024)).toFixed(2);
+                    const remainingMb = (totalMb - uploadedMb).toFixed(2);
+                    uploadStatus.innerHTML = `Uploaded: ${uploadedMb} MB / ${totalMb} MB (Remaining: ${remainingMb} MB)`;
+                }
+            };
+
+            // Reset the progress bar when the upload completes
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    document.getElementById('progressBar').style.width = '100%';
+                    document.getElementById('uploadStatus').innerHTML = 'File uploaded successfully!';
+                    setTimeout(function() {
+                        location.reload();  // Reload the page to show the new uploaded file
+                    }, 1000);
+                } else {
+                    document.getElementById('uploadStatus').innerHTML = 'File upload failed!';
+                }
+            };
+
+            // Reset progress bar on error
+            xhr.onerror = function() {
+                document.getElementById('uploadStatus').innerHTML = 'Error uploading file.';
+            };
+
+            // Send the form data
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>
+    
